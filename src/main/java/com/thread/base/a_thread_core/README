@@ -1,0 +1,48 @@
+第一章节
+1、线程的启动
+2、如何使线程暂停
+3、如何使线程停止
+4、线程的优先级
+5、线程安全相关的问题
+
+1、线程的启动
+    (1) 线程实现的两种方式，继承Thread类或者实现Runnable接口(其中Thread类也是实现的Runnable接口)
+    重写run方法，调用start()启动
+
+2、线程的暂停
+    (1)这两个方法均已过期
+    suspend()暂停
+    resume() 恢复
+    缺点是独占资源，当suspend时永远不释放资源
+    容易造成数据的不同步
+    (2) yield方法
+    此方法是放弃当前的cpu资源，让其他任务去占用cpu，但放弃的时间不确定，也可能刚放弃，马上又获取cpu时间片
+
+3、线程的停止
+interrupt/包下
+    (1) Thread.stop() 已经过期
+    使用interrupt()方法停止线程，但是不会立马停止，会继续执行完当前run方法中的内容才会停止
+    查看线程是否停止的方法：
+    this.interrupted() 静态(static)方法，这个方法有清楚当前状态的功能，第2次调用就会返回false
+    this.isInterrupted() 普通方法， 不会清楚状态
+
+    (2) 不管是线程sleep时候进行了interrupt，还是interrupt之后sleep，都会报错InterruptedException停止
+
+4、线程的优先级
+    (1) 线程优先级分为 [1, 10] 这10个等级，其中10是最高等级，代表(尽量)先执行，如果不在这几个等级中，就会抛出异常IllegalArgumentException
+    (2) 线程具有继承特性，就是A线程启动B线程，那么B线程的优先级和A线程一样
+    (3) CPU尽量将执行资源让给优先级比较高的线程，但是不代表先执行优先级高的，然后再执行优先级低的，只是优先级高的先执行的概率大于优先级低的
+
+5、线程安全相关的问题
+    守护线程Daemon
+                MyThread myThread = new MyThread();
+                myThread.setDaemon(true);
+                myThread.start();
+                Thread.sleep(5000);
+                System.out.println("main end");
+    myThread.setDaemon(true)必须在start之前,这就代表了myThread为一个守护线程
+    在Daemon线程中产生的新线程也是Daemon
+    说明：
+    (1) 在没有用户线程可服务的时候守护线程会自动离开
+    (2) 守护线程的优先级比价低，用于提供服务
+    典型的守护线程就是垃圾回收线程
