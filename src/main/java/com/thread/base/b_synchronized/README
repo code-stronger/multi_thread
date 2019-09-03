@@ -1,0 +1,45 @@
+第二章节 对象及变量的并发访问
+1、synchronized对象监视器为Object时的使用
+2、synchronized对象监视器为Class时的使用
+3、非线程安全是如何出现的
+4、关键字volatile的主要作用
+5、关键字volatile与synchronized的区别与使用情况
+
+1、synchronized对象监视器为Object时的使用
+    可以在方法或者代码块 使用该关键字，所用的对象监视器就是当前所在的类
+    synchronized锁重入：
+        (1)当一个线程获得对象锁时，再次请求该对象锁时是可以再次得到该对象的锁的
+        也就是service1()->service2()->service3()都是synchronized，当A线程调用service1()时可以接连调用
+        (2) 同样的当子类调用父类的synchronized方法，而且子类的当前方法也是synchronized，也是锁重入
+        (3) 按照(2)所说，如果子类的当前方法不是同步的，那么就不存在锁重入了
+
+    当出现异常时会释放锁
+    以下几种情况不会释放锁：
+    (1) 在同步代码块中执行了sleep()，当前线程放弃cpu，开始睡眠，但是不会释放锁
+    (2) 在同步代码块中执行了yield(),当前线程放弃cpu，但不会释放锁
+    (3) 在同步代码块中执行了suspend(),当前线程被暂停，但不会释放锁
+
+    使用
+        synchronized(this){
+            代码块
+        }
+    this代表的还是当前Object
+    多个线程调用同一个对象中的不同名称的synchronized同步方法或synchronized(this)同步代码块时，
+    调用的效果就是按顺序执行，也就是同步、阻塞的
+
+    如果想在当前类中，使用不同的同步对象，
+    synchronized(非this对象){
+        代码块
+    }
+
+2、synchronized对象监视器为Class时的使用
+    当静态方法使用synchronized修饰时就代表当前的对象监视器为Class，注意Class和上面Object的同步代码块不同步
+    内部类和普通类是一样的
+
+4、关键字volatile的主要作用
+当线程访问某个变量时，会去当前线程的私有堆栈去获取，而使用volatile则强制其去公共堆栈取变量的值
+
+
+关键字synchronized可以保证同一时刻，只有一个线程可以执行某一个方法或某一个代码块。它包含两个特征：互斥性和可见性
+同步synchronized不仅可以解决一个线程看到对象处于不一致的状态，还可以保证进入同步方法或者同步代码块的每个线程，
+都看到由同一个锁保护之前所有的修改结果
