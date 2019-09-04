@@ -1,0 +1,29 @@
+第三章节 线程间通信
+1、使用wait/notify实现线程间的通信
+2、生产者/消费者模式的实现
+3、方法join的使用
+4、ThreadLocal 类的使用
+
+1、使用wait/notify实现线程间的通信
+    (1) wait()和notify()都要在同步方法或同步代码块中调用，即在调用前，线程也必须获得该对象的对象级别锁。
+    如果使用这两个方法时没有持有适当的锁，就会抛出IllegalMonitorStateException.
+    在执行notify方法之后，不会立即释放该对象锁，而是要等到当前线程执行完之后，wait线程才会被唤醒
+    一个notify方法，只会随机唤醒一个wait方法
+    (2) 当线程wait的时候执行interrupt()方法会出现InterruptedException错误
+    (3) 通过管道进行线程间通信
+        PipedInputStream和PipedOutputStream
+        PipedReader和PipedWriter
+
+3、方法join的使用
+在A线程中调用了B线程b.join();那么A线程等待b线程执行结束
+join() 方法会先抢锁然后释放锁
+
+4、ThreadLocal 类的使用
+set(Object object)添加值； get() 获取值
+没有set，第一次get()会为null，可以重写ThreadLocal中的initialValue()方法
+
+InheritableThreadLocal类可以让子线程从父线程中取到值
+如果继承的值想改动，可以重写childValue()方法
+但是有一点需要注意：如果子线程在取得值的同时，主线程将InheritableThreadLocal中的值进行更改，
+那么子线程取到的值还是旧值
+
