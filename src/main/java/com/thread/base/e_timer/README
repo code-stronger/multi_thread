@@ -1,0 +1,21 @@
+第五章 Timer
+1、如何实现指定时间执行任务
+2、如何实现按指定周期执行任务
+
+在JDK库中Timer类主要负责计划任务的功能，也就是在指定的时间开始执行一任务。
+Timer类的主要作用是设置计划任务，但封装任务的类是TimerTask类，执行计划任务的代码要放到TimerTask的子类中
+
+1、如何实现指定时间执行任务
+    private static Timer timer = new Timer();
+    private static TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+            System.out.println("task: " + new Date());
+        }
+    };
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Date parse = sdf.parse("2019-09-04 16:48:30");
+    timer.schedule(task, parse);
+
+
+
